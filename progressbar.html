@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>进度条特效</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            border: none;
+        }
+
+        #progress {
+            width: 1000px;
+            height: 35px;
+            line-height: 35px;
+            margin: 100px auto;
+
+            position: relative;
+        }
+
+        #progress_bar {
+            width: 900px;
+            height: 100%;
+            background-color: #ccc;
+            border-radius: 8px;
+
+            position: relative;
+        }
+
+        #progress_bar_fg {
+            width: 0;
+            height: 100%;
+            background-color: orangered;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        #progress_value {
+            position: absolute;
+            right: 40px;
+            top: 0;
+            text-align: center;
+        }
+
+        span {
+            width: 26px;
+            height: 49px;
+            background-color: orangered;
+            position: absolute;
+            left: 0;
+            top: -7px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="progress">
+    <div id="progress_bar">
+        <div id="progress_bar_fg"></div>
+        <span></span>
+    </div>
+    <div id="progress_value">0%</div>
+</div>
+
+<script>
+    window.onload = function () {
+        //获取需要的标签
+        var progress = document.getElementById('progress');
+        var bar = progress.children[0];
+        var value = progress.children[1];
+        var fg = bar.children[0];
+        var handle = bar.children[1];
+
+        //监听鼠标在手柄上的按下
+        handle.onmousedown = function (event) {
+            var e = event || window.event;
+
+            //获取初始位置
+            var begin = e.clientX - handle.offsetLeft;
+
+            //监听鼠标的移动
+            document.onmousemove = function (event) {
+                var e = event || window.event;
+
+                //获取移动的距离
+                var x = e.clientX - begin;
+
+                //边界值处理
+                if (x < 0) {
+                    x = 0;
+                } else if (x >= bar.offsetWidth - handle.offsetWidth) {
+                    x = bar.offsetWidth - handle.offsetWidth;
+                }
+
+                //走起来
+                handle.style.left = x + 'px';
+                fg.style.width = x + 'px';
+                value.innerText = parseInt(x / (bar.offsetWidth - handle.offsetWidth) * 100) + '%';
+                return false;
+            };
+
+            //监听鼠标抬起
+            document.onmouseup = function () {
+                document.onmousemove = null;
+            }
+        }
+    }
+</script>
+</body>
+</html>
